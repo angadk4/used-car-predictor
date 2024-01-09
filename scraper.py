@@ -63,9 +63,11 @@ class Scraper:
                 # We will just skip retries as its beyond the scope of this tutorial and we are only downloading a single url
                 print("Skipping. Connnection error")
 
-
-        html = response.text
-        soup = bs(html, 'html.parser')
+        try:
+            html = response.text
+            soup = bs(html, 'html.parser')
+        except:
+            return 0
 
         #self.driver.get(url)
         #cf = self.driver.find_element(By.XPATH, '//*[@id="tabpanel-features"]/div/aside/div[1]/div/div[1]/div[2]/ul')
@@ -78,9 +80,7 @@ class Scraper:
                 mo = (str(txt)[6:].strip())
             if 'Year:' in txt:
                 ye = (str(txt)[5:].strip())
-        print([ma, mo, ye])
         label = soup.find_all("span", {"class": "G2jAym E2jAym p2jAym b2jAym"})
         print(label)
         return [ma, mo, ye], label
-
 

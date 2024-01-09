@@ -21,9 +21,11 @@ def main():
     print(sc.get_hrefs())
     for h in sc.get_hrefs():
         x, y = sc.get_info("https://www.kijijiautos.ca/" + str(h))
-        features.append(x)
-        labels.append(y)
+        if x != 0 and y != 0:
+            features.append(x)
+            labels.append(y)
     print(features)
+    print(labels)
     print("\n\nFinished Running Script")
     time.sleep(3000)
 
