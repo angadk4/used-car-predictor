@@ -3,6 +3,9 @@ import createmodel
 import time
 
 SCROLL_RANGE = 3
+
+features = []
+labels = []
 def main():
     sc = scraper.Scraper()
     sc.load_url()
@@ -16,9 +19,13 @@ def main():
     print("Reading data now...")
     sc.read_data()
     print(sc.get_hrefs())
-    print(sc.get_features("https://www.kijijiautos.ca/" + str(sc.hrefs[0])))
+    for h in sc.get_hrefs():
+        x, y = sc.get_info("https://www.kijijiautos.ca/" + str(h))
+        features.append(x)
+        labels.append(y)
+    print(features)
     print("\n\nFinished Running Script")
-    time.sleep(300)
+    time.sleep(3000)
 
 if __name__ == "__main__":
     main()
