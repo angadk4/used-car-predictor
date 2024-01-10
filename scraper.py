@@ -25,7 +25,7 @@ class Scraper:
     def scroll_down(self):
         self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight)')
     def get_proxies(self):
-        url = 'https://free-proxy-list.net/'
+        url = 'https://sslproxies.org/'
         response = requests.get(url)
         parser = fromstring(response.text)
         proxies = set()
@@ -72,6 +72,20 @@ class Scraper:
         #self.driver.get(url)
         #cf = self.driver.find_element(By.XPATH, '//*[@id="tabpanel-features"]/div/aside/div[1]/div/div[1]/div[2]/ul')
         #soup = bs(cf.get_attribute("innerHTML"), "html.parser")
+        time.sleep(5)
+        ma, mo, ye, kms, price = (0, 0, 0, 0, 0)
+
+        for kelem in soup.find_all('span',{'class':'G2jAym B2jAym p2jAym b2jAym'}):
+            kms_txt = kelem.text if kelem else ''
+            if 'km' in kms_txt:
+                kms = (str(kms_txt))
+
+        for pelem in soup.find_all('span', {"class":'G2jAym E2jAym p2jAym b2jAym'}):
+            price_txt = pelem.text if pelem else ''
+            if '$' in price_txt:
+                price = (str([price_txt]))
+
+
         for li in soup.find_all('li'):
             txt = li.text
             if 'Make:' in txt:
@@ -80,7 +94,9 @@ class Scraper:
                 mo = (str(txt)[6:].strip())
             if 'Year:' in txt:
                 ye = (str(txt)[5:].strip())
-        label = soup.find_all("span", {"class": "G2jAym E2jAym p2jAym b2jAym"})
-        print(label)
-        return [ma, mo, ye], label
+        print(ma, mo, ye, kms, price)
+        return ma, mo, ye, kms, price
+
+
+
 

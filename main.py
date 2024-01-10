@@ -20,14 +20,10 @@ def main():
     sc.read_data()
     print(sc.get_hrefs())
     for h in sc.get_hrefs():
-        x, y = sc.get_info("https://www.kijijiautos.ca/" + str(h))
-        if x != 0 and y != 0:
-            features.append(x)
-            labels.append(y)
-    print(features)
-    print(labels)
+        data = sc.get_info("https://www.kijijiautos.ca/" + str(h))
+        print(data)
     print("\n\nFinished Running Script")
-    time.sleep(3000)
+    time.sleep(300)
 
 if __name__ == "__main__":
     main()
