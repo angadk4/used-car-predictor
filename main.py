@@ -2,17 +2,17 @@ import scraper
 import createmodel
 import time
 
-SCROLL_RANGE = 10
+SCROLL_RANGE = 100
 def main():
     sc = scraper.Scraper()
     sc.load_url()
     print("Loaded KJIJI AUTOS...")
     for i in range(SCROLL_RANGE):
-        time.sleep(2)
+        time.sleep(4)
         sc.scroll_down()
         print("Scroll " + str(i+1))
     print("Done scrolling, waiting for load...")
-    time.sleep(10)
+    time.sleep(120)
     print("Reading data now...")
     sc.read_data()
     print(sc.get_hrefs())
@@ -22,7 +22,7 @@ def main():
         sc.csv_manage(data)
         #print(data)
     print("\n\nFinished Running Script")
-    time.sleep(3000)
+    time.sleep(12000)
 
 if __name__ == "__main__":
     main()

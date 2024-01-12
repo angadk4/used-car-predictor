@@ -19,6 +19,10 @@ This project is a **work in progress**. The scraping tool is mostly complete, ef
 - Python
 - Selenium
 - BeautifulSoup
+- Pandas
+- Matplotlib
+- Seaborn
+- Sklearn
 
 ## Contributing
 This project is currently not open for contributions, but stay tuned for future updates where collaboration might be welcomed.
