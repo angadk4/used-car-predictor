@@ -9,6 +9,10 @@ from lxml.html import fromstring
 import requests
 from itertools import cycle
 import traceback
+import re
+import csv
+import os
+import datetime
 class Scraper:
     def __init__(self):
         chrome_options = Options()
@@ -17,6 +21,7 @@ class Scraper:
         self.url = "http://www.kijijiautos.ca/"
         self.hrefs= []
         self.features = []
+        self.banned_proxies = set()
 
     def get_hrefs(self):
         return self.hrefs
@@ -24,6 +29,7 @@ class Scraper:
         self.driver.get(self.url + 'cars/sedan')
     def scroll_down(self):
         self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight)')
+
     def get_proxies(self):
         url = 'https://sslproxies.org/'
         response = requests.get(url)
@@ -55,7 +61,7 @@ class Scraper:
             print("Current proxy: ", proxy)
             print("Request #%d" % i)
             try:
-                response = requests.get(url, proxies={"http": proxy, "https": proxy})
+                response = requests.get(url, proxies={"http": proxy, "https": proxy}, timeout=3)
                 print("got response")
                 break
             except:
@@ -75,16 +81,15 @@ class Scraper:
         time.sleep(5)
         ma, mo, ye, kms, price = (0, 0, 0, 0, 0)
 
-        for kelem in soup.find_all('span',{'class':'G2jAym B2jAym p2jAym b2jAym'}):
+        for kelem in soup.find_all('span', {'class': 'G2jAym B2jAym p2jAym b2jAym'}):
             kms_txt = kelem.text if kelem else ''
             if 'km' in kms_txt:
-                kms = (str(kms_txt))
+                kms = ''.join(re.findall(r'\d+', kms_txt))
 
-        for pelem in soup.find_all('span', {"class":'G2jAym E2jAym p2jAym b2jAym'}):
+        for pelem in soup.find_all('span', {"class": 'G2jAym E2jAym p2jAym b2jAym'}):
             price_txt = pelem.text if pelem else ''
             if '$' in price_txt:
-                price = (str([price_txt]))
-
+                price = ''.join(re.findall(r'\d+', price_txt))
 
         for li in soup.find_all('li'):
             txt = li.text
@@ -94,9 +99,26 @@ class Scraper:
                 mo = (str(txt)[6:].strip())
             if 'Year:' in txt:
                 ye = (str(txt)[5:].strip())
-        print(ma, mo, ye, kms, price)
-        return ma, mo, ye, kms, price
 
+        if ma != 0 and mo != 0 and ye != 0 and price != 0:
+            print(ma)
+            print(mo)
+            print(ye)
+            print(kms)
+            print(price)
+            return [ma, mo, ye, kms, price]
+        else:
+            return 0
 
+    def csv_manage(self, car_data):
+        if car_data != 0:
+            csv_file = 'cars.csv'
+            if not os.path.exists(csv_file):
+                with open(csv_file, mode='w', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(['Make', 'Model', 'Year', 'Kilometres', 'Price', 'Date'])
 
-
+            with open(csv_file, mode='a', newline='') as file:
+                writer = csv.writer(file)
+                current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+                writer.writerow(car_data + [current_date])
